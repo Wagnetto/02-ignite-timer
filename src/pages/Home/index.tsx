@@ -29,6 +29,7 @@ interface Cycle {
   minutesAmount: number
   startDate: Date
   interruptedDate?: Date
+  finishedDate?: Date
 }
 
 type NewCycleFormData = zod.infer<typeof newCycleValidationSchema>
@@ -44,15 +45,33 @@ export function Home() {
   })
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+  const totalInSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
 
   useEffect(() => {
     let interval: number
 
     if (activeCycle) {
+      // se o ciclo tá ativo, setamos o interval e criamos secondsDifference:
       interval = setInterval(() => {
-        setSecondsAmountPassed(
-          differenceInSeconds(new Date(), activeCycle.startDate),
+        const secondsDifference = differenceInSeconds(
+          new Date(),
+          activeCycle.startDate,
         )
+        if (secondsDifference >= totalInSeconds) {
+          // se acabou, identificar o ciclo: PERCORRER:
+          setCycles(
+            cycles.map((cycle) => {
+              if (cycle.id === activeCycleId) {
+                return { ...cycle, finishedDate: new Date() }
+              } else {
+                return cycle
+              }
+            }),
+          )
+        }
+
+        setSecondsAmountPassed(totalInSeconds)
+        clearInterval(interval)
       }, 1000)
     }
     return () => {
@@ -88,7 +107,6 @@ export function Home() {
     setActiveCycleId(null)
   }
 
-  const totalInSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
   const currentSeconds = activeCycle ? totalInSeconds - secondsAmountPassed : 0
 
   const minutesAmount = Math.floor(currentSeconds / 60)
@@ -100,6 +118,8 @@ export function Home() {
   useEffect(() => {
     if (activeCycle) {
       document.title = `${minutes} : ${seconds}`
+    } else {
+      document.title = '00:00'
     }
   }, [minutes, seconds, activeCycle])
 
