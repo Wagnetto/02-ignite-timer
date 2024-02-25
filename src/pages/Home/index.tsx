@@ -51,16 +51,14 @@ export function Home() {
     let interval: number
 
     if (activeCycle) {
-      // se o ciclo tá ativo, setamos o interval e criamos secondsDifference:
       interval = setInterval(() => {
         const secondsDifference = differenceInSeconds(
           new Date(),
           activeCycle.startDate,
         )
         if (secondsDifference >= totalInSeconds) {
-          // se acabou, identificar o ciclo: PERCORRER:
-          setCycles(
-            cycles.map((cycle) => {
+          setCycles((state) =>
+            state.map((cycle) => {
               if (cycle.id === activeCycleId) {
                 return { ...cycle, finishedDate: new Date() }
               } else {
