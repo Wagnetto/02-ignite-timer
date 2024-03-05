@@ -27,10 +27,9 @@ export function Countdown() {
           markCurrentCycleAsFinished()
           updateSecondsPassed(totalInSeconds)
           clearInterval(interval)
+        } else {
+          updateSecondsPassed(secondsDifference)
         }
-
-        updateSecondsPassed(totalInSeconds)
-        clearInterval(interval)
       }, 1000)
     }
     return () => {
