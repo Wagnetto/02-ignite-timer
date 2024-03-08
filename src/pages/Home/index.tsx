@@ -92,6 +92,7 @@ export function Home() {
         }
       }),
     )
+    setActiveCycleId(null)
   }
 
   function updateSecondsPassed(seconds: number) {
