@@ -12,9 +12,9 @@ interface CreateCycleData {
 }
 
 interface CyclesContextType {
+  cycles: Cycle[]
   activeCycle: Cycle | undefined
   activeCycleId: string | null
-  cycles: Cycle[]
   secondsAmountPassed: number
   createCycle: (data: CreateCycleData) => void
   interruptCurrentCycle: () => void
@@ -22,11 +22,10 @@ interface CyclesContextType {
   markCurrentCycleAsFinished: () => void
 }
 
+export const CyclesContext = createContext({} as CyclesContextType)
 interface CyclesContextProviderProps {
   children: ReactNode
 }
-
-export const CyclesContext = createContext({} as CyclesContextType)
 
 export function CyclesContextProvider({
   children,
